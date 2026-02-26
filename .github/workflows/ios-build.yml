@@ -1,0 +1,59 @@
+name: iOS Release Build
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch: # Allows manual trigger from GitHub Actions tab
+
+jobs:
+  build:
+    runs-on: macos-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.24.0'
+          channel: 'stable'
+          cache: true
+
+      - name: Flutter version
+        run: flutter --version
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Verify Flutter installation
+        run: flutter doctor -v
+
+      - name: Install CocoaPods
+        run: |
+          cd ios
+          pod install
+          cd ..
+
+      - name: Build iOS (no codesign - for testing)
+        run: flutter build ios --release --no-codesign
+
+      - name: Create IPA archive
+        run: |
+          cd build/ios/iphoneos
+          zip -r KalmFu_Panda_Runner.zip Runner.app
+
+      - name: Upload iOS build artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: KalmFu-Panda-iOS-Build
+          path: build/ios/iphoneos/KalmFu_Panda_Runner.zip
+          retention-days: 30
+
+      - name: Build summary
+        run: |
+          echo "## iOS Build Complete! :rocket:" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Download the artifact from the Actions page**" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "Note: This build is not code signed. You'll need to sign it with your Apple Developer certificate before uploading to App Store." >> $GITHUB_STEP_SUMMARY

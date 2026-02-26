@@ -1,0 +1,52 @@
+# Codemagic CI/CD configuration for KalmFu Panda
+# https://codemagic.io/apps/
+
+workflows:
+  ios-workflow:
+    name: iOS Release Build
+    integrations:
+      app_store_connect: # Add your App Store Connect API key
+        api_key: AppStoreConnect_$APP_STORE_CONNECT_PRIVATE_KEY_ID
+      git: # Optional - for pushing to git
+        clone_depth: 1
+    environment:
+      vars:
+        APP_STORE_CONNECT_PRIVATE_KEY_ID: Your Key ID
+        APP_STORE_CONNECT_ISSUER_ID: Your Issuer ID
+        APP_STORE_CONNECT_PRIVATE_KEY: |
+          -----BEGIN PRIVATE KEY-----
+          Your private key content here
+          -----END PRIVATE KEY-----
+      xcode: 15
+      cocoapods: default
+    scripts:
+      - name: Install Flutter
+        script: |
+          flutter install
+      - name: Get Flutter dependencies
+        script: |
+          flutter pub get
+      - name: Install CocoaPods dependencies
+        script: |
+          cd ios && pod install && cd ..
+      - name: Flutter build iOS (no codesign)
+        script: |
+          flutter build ios --release --no-codesign
+      - name: Set up keychain
+        script: |
+          keychain initialize
+      - name: Set up code signing
+        script: |
+          echo "Importing certificates..."
+          # Add your certificate and profile setup here
+      - name: Build and archive
+        script: |
+          xcode-project build-ipa \
+            --project ios/Runner.xcodeproj \
+            --workspace ios/Runner.xcworkspace \
+            --scheme Runner \
+            --configuration Release
+    artifacts:
+      - build/ios/ipa/*.ipa
+      - /tmp/xcodebuild_logs/*.log
+      - flutter_drive.log
