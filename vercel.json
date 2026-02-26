@@ -1,7 +1,8 @@
 {
-  "buildCommand": "flutter build web --release --base-href '/'",
+  "buildCommand": "npx flutter_bash install && flutter build web --release --base-href '/'",
   "outputDirectory": "build/web",
   "rewrites": [
     { "source": "/(.*)", "destination": "/index.html" }
-  ]
+  ],
+  "installCommand": "npm install --quiet"
 }
