@@ -1,33 +1,21 @@
 # Codemagic CI/CD configuration for KalmFu Panda
+# Minimal config - let Codemagic UI handle code signing
 workflows:
   ios-workflow:
     name: iOS App Store Build
-    environment:
-      vars:
-        FLUTTER_VERSION: "3.24.5"
-      xcode: latest
-      cocoapods: default
     triggering:
       events:
         - push
       branch_patterns:
         - pattern: main
           include: true
-    flutter_build:
-      release:
-        export_options:
-          method: app-store
-          uploadSymbols: true
     scripts:
-      - name: Clean build
+      - name: Install Flutter dependencies
         script: |
-          cd ios && rm -rf Pods Podfile.lock .symlinks && cd ..
+          flutter pub get
       - name: Install CocoaPods
         script: |
           cd ios && pod install && cd ..
-      - name: Install Flutter
-        script: |
-          flutter pub get
     publishing:
       app_store_connect:
         apple_id: anupatwritnun@gmail.com
