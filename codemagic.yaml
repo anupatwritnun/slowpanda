@@ -1,7 +1,7 @@
 # Codemagic CI/CD configuration for KalmFu Panda
 workflows:
   ios-workflow:
-    name: iOS Build
+    name: iOS App Store Build
     environment:
       vars:
         FLUTTER_VERSION: "3.24.5"
@@ -23,11 +23,13 @@ workflows:
       - name: Install Flutter
         script: |
           flutter pub get
-      - name: Build iOS for App Store
+      - name: Build iOS IPA for App Store
         script: |
-          flutter build ios --release
+          flutter build ipa --release
     publishing:
       app_store_connect:
         apple_id: anupatwritnun@gmail.com
         issuer_id: d1d4fd43-48c1-4027-ae88-b3651d497396
         key_id: HX3GW7MKG2
+        submit_to_testflight: false
+        submit_to_app_store: false
