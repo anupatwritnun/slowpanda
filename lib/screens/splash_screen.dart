@@ -62,12 +62,19 @@ class _SplashScreenState extends State<SplashScreen>
     } catch (e) {
       debugPrint('Error initializing video: $e');
       // If video fails, navigate after delay
-      Future.delayed(const Duration(milliseconds: 2200), () {
-        if (mounted && !_hasNavigated) {
-          _navigateToQuoteScreen();
-        }
-      });
+      _scheduleNavigation();
     }
+
+    // Always schedule a fallback navigation in case video doesn't complete
+    _scheduleNavigation();
+  }
+
+  void _scheduleNavigation() {
+    Future.delayed(const Duration(milliseconds: 2500), () {
+      if (mounted && !_hasNavigated) {
+        _navigateToQuoteScreen();
+      }
+    });
   }
 
   void _videoListener() {
