@@ -28,5 +28,5 @@ workflows:
           flutter build ios --release --no-codesign
     publishing:
       app_store_connect:
-        apple_id: $APPLE_ID
-        api_key: $APP_STORE_CONNECT_API_KEY_ISSUER_ID
+        apple_id: anupatwritnun@gmail.com
+        api_key: d1d4fd43-48c1-4027-ae88-b3651d497396
