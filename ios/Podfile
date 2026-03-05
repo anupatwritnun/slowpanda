@@ -32,11 +32,6 @@ target 'Runner' do
   use_modular_headers!
 
   flutter_install_all_ios_pods File.dirname(File.realpath(__FILE__))
-
-  # Required for share_plus, screenshot, and other plugins
-  pod 'share_plus', :path => "#{flutter_root}/.symlinks/plugins/share_plus/ios"
-  pod 'screenshot', :path => "#{flutter_root}/.symlinks/plugins/screenshot/ios"
-  pod 'path_provider', :path => "#{flutter_root}/.symlinks/plugins/path_provider/ios"
 end
 
 post_install do |installer|
