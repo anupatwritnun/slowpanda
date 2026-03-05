@@ -13,13 +13,11 @@ workflows:
       branch_patterns:
         - pattern: main
           include: true
-    signing:
-      profiles:
-        - profile: codemagic
-          platform: ios
-          bundle_id: com.kalmfu.panda
-          autoprovision: true
-          signing_type: app_store
+    flutter_build:
+      release:
+        export_options:
+          method: app-store
+          uploadSymbols: true
     scripts:
       - name: Clean build
         script: |
@@ -30,9 +28,6 @@ workflows:
       - name: Install Flutter
         script: |
           flutter pub get
-      - name: Build iOS IPA for App Store
-        script: |
-          flutter build ipa --release
     publishing:
       app_store_connect:
         apple_id: anupatwritnun@gmail.com
